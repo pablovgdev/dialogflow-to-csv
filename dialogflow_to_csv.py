@@ -50,5 +50,5 @@ for json_file in json_files:
 
         output += f'{context};{intent_name};{training_phrases};{responses}\n'
 
-with open(f'DEPLACEBOT_{date.today()}.csv', 'w', encoding='utf-8') as result_file:
+with open(f'{date.today()}.csv', 'w', encoding='utf-8') as result_file:
     result_file.writelines(output)
