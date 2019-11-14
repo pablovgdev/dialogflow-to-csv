@@ -7,36 +7,37 @@ path_to_json = f'{os.getcwd()}/bot/intents'
 
 json_files = [filename for filename in os.listdir(path_to_json)
               if filename.endswith('.json') and filename.startswith('[')
-              and 'usersays' not in filename and 'EVENT' not in filename]
+              and 'usersays' not in filename]
 
 output = 'Context;Intent;Training;Responses\n'
 
 for json_file in json_files:
-    if 'FALLBACK' not in json_file:
-        intent_name = json_file.replace('.json', '')
+    intent_name = json_file.replace('.json', '')
 
-        responses_path = f'{os.getcwd()}/bot/intents/{json_file}'
-        training_path = f'{os.getcwd()}/bot/intents/{intent_name}_usersays_es.json'
+    responses_path = f'{os.getcwd()}/bot/intents/{json_file}'
+    training_path = f'{os.getcwd()}/bot/intents/{intent_name}_usersays_es.json'
 
-        with open(responses_path, 'r', encoding='utf-8') as responses_file:
-            response = json.load(responses_file)
-            context = response['contexts'][0] if len(
-                response['contexts']) else ''
-            speech = response['responses'][0]['messages'][0]['speech']
-            responses = ''
+    with open(responses_path, 'r', encoding='utf-8') as responses_file:
+        response = json.load(responses_file)
+        context = response['contexts'][0] if len(
+            response['contexts']) else ''
+        speech = response['responses'][0]['messages'][0]['speech']
+        responses = ''
 
-            if isinstance(speech, list):
-                for text in speech:
-                    text = text.replace('\\n', '\n')
-                    responses += text + '\n\n\n'
-            else:
-                responses += speech
+        if isinstance(speech, list):
+            for text in speech:
+                text = text.replace('\\n', '\n')
+                responses += text + '\n\n\n'
+        else:
+            responses += speech
 
-            responses = f'"{responses}"'
+        responses = f'"{responses}"'
 
+    training_phrases = ''
+
+    if 'FALLBACK' not in intent_name:
         with open(training_path, 'r', encoding='utf-8') as training_file:
             training = json.load(training_file)
-            training_phrases = ''
 
             for phrase in training:
                 training_phrase = ''
@@ -48,7 +49,9 @@ for json_file in json_files:
 
             training_phrases = f'"{training_phrases}"'
 
-        output += f'{context};{intent_name};{training_phrases};{responses}\n'
+    output += f'{context};{intent_name};{training_phrases};{responses}\n'
 
-with open(f'{date.today()}.csv', 'w', encoding='utf-8') as result_file:
+
+with open(f'BOT_{date.today()}.csv', 'w', encoding='utf-8') as result_file:
     result_file.writelines(output)
+    
