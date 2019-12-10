@@ -35,7 +35,7 @@ for json_file in json_files:
 
     training_phrases = ''
 
-    if 'FALLBACK' not in intent_name:
+    if 'FALLBACK' not in intent_name and 'EVENT' not in intent_name and '.E' not in intent_name:
         with open(training_path, 'r', encoding='utf-8') as training_file:
             training = json.load(training_file)
 
@@ -54,4 +54,3 @@ for json_file in json_files:
 
 with open(f'BOT_{date.today()}.csv', 'w', encoding='utf-8') as result_file:
     result_file.writelines(output)
-    
